@@ -86,7 +86,7 @@ def batched_load_balancing_loss(args: Arguments):
     scale_numerator = (args.moe_num_experts * args.moe_loss_weight)
     scale_denominator = (args.num_layers * tokens * args.moe_top_k)
     scale = scale_numerator / scale_denominator
-    return scale * torch.dot(tokens_per_expert, expert_scores)
+    return scale * torch.dot(tokens_per_expert, expert_scores), tokens_per_expert_per_layer
 
 
 # NOTE: This class defines MoE expert computation, including expert model parallel

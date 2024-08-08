@@ -463,11 +463,11 @@ class MoE(torch.nn.Module):
 
         batch, seqlen, = x.shape[:2]
 
-        if attention_mask is not None:
-            x, indices, _, _ = unpad_input(x, attention_mask)
+        # if attention_mask is not None:
+        #     x, indices, _, _ = unpad_input(x, attention_mask)
 
         # Compute the expert scores and assignments.
-        scores, expert_weights, top_experts = self.router(x)
+        scores, expert_weights, top_experts = self.router(x, attention_mask=attention_mask)
 
         # Compute the experts.
         out = self.experts(x, scores, expert_weights, top_experts)

@@ -461,11 +461,14 @@ class MoE(torch.nn.Module):
         # do it before we permute the tokens to save bandwidth.
         x = common.cast_if_autocast_enabled(x)
 
+        if attention_mask is not None and indices is None:
+            raise ValueError("Either indices or attention_mask must be provided.")
+
         if indices is not None:
             x = pad_input(x, indices, batch, seqlen)
 
-        # if attention_mask is not None:
-        #     x, indices, _, _ = unpad_input(x, attention_mask)
+        elif attention_mask is not None:
+            x, indices, _, _ = unpad_input(x, attention_mask)
 
         # Compute the expert scores and assignments.
         scores, expert_weights, top_experts = self.router(x, attention_mask=attention_mask)

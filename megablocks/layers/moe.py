@@ -433,7 +433,7 @@ class ParallelMLP(torch.nn.Module):
         if self.bias is not None:
             if self.args.return_bias:
                 return x, self.bias
-            return x + self.bias
+            return (x + self.bias).to(x.dtype)
         return x
 
 
@@ -466,6 +466,7 @@ class MoE(torch.nn.Module):
 
         # Compute the experts.
         out = self.experts(x, scores, expert_weights, top_experts)
+        out = out.to(x.dtype)
         if self.shared_expert is not None:
             shared_expert_out = self.shared_expert(x)
             out = self.shared_expert.add_experts_sharedexpert(
